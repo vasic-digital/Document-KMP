@@ -1,0 +1,19 @@
+graph TB
+    subgraph "Document-KMP"
+        D[Document<br>@Serializable data class]
+        FD[FormatDetector<br>extension + content patterns]
+
+        subgraph "expect/actual"
+            CTM[currentTimeMillis]
+            GFM[getFileModTime]
+            GFS[getFileSize]
+            FE[fileExists]
+            CD[createDocument]
+        end
+    end
+
+    D -->|detectFormatByExtension| FD
+    D -->|detectFormatByContent| FD
+    D -->|hasChanged| GFM
+    D -->|touch| CTM
+    CD -->|uses| FD
