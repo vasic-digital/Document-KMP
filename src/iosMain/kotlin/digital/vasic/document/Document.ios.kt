@@ -1,13 +1,22 @@
+@file:OptIn(kotlinx.cinterop.ExperimentalForeignApi::class)
+
 package digital.vasic.document
 
-import platform.Foundation.*
+import platform.Foundation.NSDate
+import platform.Foundation.NSFileManager
+import platform.Foundation.NSFileModificationDate
+import platform.Foundation.NSFileSize
+import platform.Foundation.NSNumber
+import platform.Foundation.NSURL
+import platform.Foundation.dateWithTimeIntervalSince1970
+import platform.Foundation.timeIntervalSince1970
 
-actual fun currentTimeMillis(): Long = (NSDate.date().timeIntervalSince1970 * 1000).toLong()
+actual fun currentTimeMillis(): Long = (NSDate().timeIntervalSince1970 * 1000).toLong()
 
 actual fun Document.getFileModTime(): Long {
     return try {
         val attrs = NSFileManager.defaultManager.attributesOfItemAtPath(path, null)
-        val modDate = attrs?.objectForKey(NSFileModificationDate) as? NSDate
+        val modDate = attrs?.get(NSFileModificationDate) as? NSDate
         modDate?.timeIntervalSince1970?.times(1000)?.toLong() ?: -1L
     } catch (e: Exception) { -1L }
 }
@@ -15,7 +24,7 @@ actual fun Document.getFileModTime(): Long {
 actual fun Document.getFileSize(): Long {
     return try {
         val attrs = NSFileManager.defaultManager.attributesOfItemAtPath(path, null)
-        val fileSize = attrs?.objectForKey(NSFileSize) as? NSNumber
+        val fileSize = attrs?.get(NSFileSize) as? NSNumber
         fileSize?.longValue ?: -1L
     } catch (e: Exception) { -1L }
 }
