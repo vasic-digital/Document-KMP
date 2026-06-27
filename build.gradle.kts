@@ -10,16 +10,20 @@ version = "1.0.0"
 kotlin {
     androidTarget {
         compilations.all {
-            kotlinOptions {
-                jvmTarget = "11"
+            compileTaskProvider.configure {
+                compilerOptions {
+                    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+                }
             }
         }
     }
 
     jvm("desktop") {
         compilations.all {
-            kotlinOptions {
-                jvmTarget = "11"
+            compileTaskProvider.configure {
+                compilerOptions {
+                    jvmTarget.set(org.jetbrains.kotlin.gradle.dsl.JvmTarget.JVM_11)
+                }
             }
         }
     }
@@ -45,6 +49,14 @@ kotlin {
 
         val desktopMain by getting
         val desktopTest by getting
+
+        val wasmJsMain by getting {
+            dependencies {
+                // kotlinx-browser provides window, document, localStorage etc. for Wasm/JS targets.
+                // Required since KGP 2.3.x no longer auto-provides it as a default dependency.
+                implementation("org.jetbrains.kotlinx:kotlinx-browser:0.3")
+            }
+        }
     }
 }
 
